@@ -65,9 +65,8 @@ class HBNBCommand(cmd.Cmd):
                                 # Handle string values
                                 if value.startswith('"') and\
                                         value.endswith('"'):
-                                    value = value[1:-1]
-                                    value = value.replace('\\"', '"')
-                                    value = value.replace('_', ' ')
+                                    value = value[1:-1].replace('\\"', '"')\
+                                            .replace('_', ' ')
 
                                 # Handle float values
                                 elif "." in value:
