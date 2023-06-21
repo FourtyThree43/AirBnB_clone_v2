@@ -2,6 +2,12 @@
 """Defines ``DBStorage`` class """
 
 from models.base_model import Base
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -30,5 +36,16 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker()
         self.__session = Session(self.__engine)
-        if cls:
-            query_rows = self.__session.query(cls)
+
+        new_dict = {}
+        classes = {"Amenity": Amenity, "City": City, "Place": Place,
+                   "Review": Review, "State": State, "User": User}
+
+        for class_name in classes:
+            if cls is None or cls is classes[class_name]:
+                objs = self.__session.query(classes[class_name]).all()
+                for obj in objs:
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
+                    new_dict[key] = obj
+
+        return new_dict
