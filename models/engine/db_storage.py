@@ -43,10 +43,23 @@ class DBStorage:
                    "Review": Review, "State": State, "User": User}
 
         for class_name in classes:
-            if cls is None or cls is class_name:
+            if cls is None or cls is classes[class_name]:
                 objs = self.__session.query(classes[class_name]).all()
                 for obj in objs:
                     key = "{}.{}".format(obj.__class__.__name__, obj.id)
                     new_dict[key] = obj
 
         return new_dict
+
+    def new(self, obj):
+        """add the object to the current database session"""
+        self.__session.add(obj)
+
+    def save(self):
+        """commit all changes of the current database session"""
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """delete from the current database session obj if not None"""
+        if obj is not None:
+            self.__session.delete(obj)
