@@ -34,7 +34,7 @@ class Database:
         }
 
         for class_name in classes:
-            if cls is None or cls in (classes[class_name], class_name):
+            if cls is None or cls == classes[class_name]:
                 objs = self.__session.query(classes[class_name])
                 for obj in objs:
                     key = "{}.{}".format(obj.__class__.__name__, obj.id)
