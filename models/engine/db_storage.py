@@ -2,10 +2,11 @@
 """Defines ``DBStorage`` class """
 
 from models.base_model import Base
-import os
+from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 
 class DBStorage:
     """Storage class that connects the application to a database """
@@ -14,16 +15,15 @@ class DBStorage:
 
     def __init__(self):
         """Constructor method """
-        self.__engine = create_engine(f"mysql+mysqldb://"
-                                      + f"{os.getenv('HBNB_MYSQL_USER')}:"
-                                      + f"{os.getenv('HBNB_MYSQL_PWD')}"
-                                      + f"@{os.getenv('HBNB_MYSQL_HOST')}/"
-                                      + f"{os.getenv('HBNB_MYSQL_DB')}"
-                                      , pool_pre_ping=True)
-
-        if os.getenv("HBNB_MYSQL_USER") == "test":
-            # drop all tables
-            pass
+        user = getenv('HBNB_MYSQL_USER')
+        passwad = getenv('HBNB_MYSQL_PWD')
+        host_name = getenv('HBNB_MYSQL_HOST')
+        db = getenv('HBNB_MYSQL_DB')
+        env = getenv('HBNB_ENV')
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, passwad, host_name, db))
+        if env == "test":
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Query objects on the current database session """
