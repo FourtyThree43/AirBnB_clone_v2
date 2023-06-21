@@ -27,22 +27,23 @@ class DBStorage:
         db = getenv('HBNB_MYSQL_DB')
         env = getenv('HBNB_ENV')
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(user, passwad, host_name, db))
+                                      .format(user, passwad, host_name, db),
+                                      pool_pre_ping=True)
         if env == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Query objects on the current database session """
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker()
-        self.__session = Session(self.__engine)
+        Session = sessionmaker(bind=self.__engine)
+        self.__session = Session()
 
         new_dict = {}
         classes = {"Amenity": Amenity, "City": City, "Place": Place,
                    "Review": Review, "State": State, "User": User}
 
         for class_name in classes:
-            if cls is None or cls is classes[class_name]:
+            if cls is None or cls is class_name:
                 objs = self.__session.query(classes[class_name]).all()
                 for obj in objs:
                     key = "{}.{}".format(obj.__class__.__name__, obj.id)
