@@ -24,7 +24,7 @@ class BaseModel:
         updated_at = Column(DateTime, nullable=False,
                             default=datetime.utcnow())
 
-    print(f"Storage type: {models.storage_type}")
+    # print(f"Storage type: {models.storage_type}")
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
