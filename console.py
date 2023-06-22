@@ -84,8 +84,8 @@ class HBNBCommand(cmd.Cmd):
                                 setattr(obj, key, value)
                     obj.save()
                     print(obj.id)
-                except NameError:
-                    print(f"{cls_name} not implemented")
+                except Exception as e:
+                    print(f"{e}")
 
     def do_show(self, line):
         """

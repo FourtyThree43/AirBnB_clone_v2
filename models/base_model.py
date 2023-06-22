@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """This module defines a base class for all models in our hbnb clone"""
+import models
 from uuid import uuid4
 from datetime import datetime
-from models import storage
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Datetime
+from sqlalchemy import Column, Integer, String, DateTime
 
 Base = declarative_base()
 
@@ -13,16 +13,18 @@ Base = declarative_base()
 class BaseModel:
     """A base class for all hbnb models"""
 
-    id = Column(String(60), unique=True, nullable=False, primary_key=True, default=str(uuid4()))
-    created_at = Column(Datetime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(Datetime, nullable=False, default=datetime.utcnow())
+    id = Column(String(60), unique=True, nullable=False, primary_key=True,
+                default=str(uuid4()))
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
-            self.id = id
-            self.created_at = created_at
-            self.updated_at = updated_at
+            pass
+            # self.id = id
+            # self.created_at = created_at
+            # self.updated_at = updated_at
         else:
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
@@ -38,10 +40,9 @@ class BaseModel:
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        from models import storage
         self.updated_at = datetime.now()
-        storage.new(self)
-        storage.save()
+        models.storage.new(self)
+        models.storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
@@ -55,4 +56,4 @@ class BaseModel:
 
     def delete(self):
         """Delete self from storage """
-        storage.delete(self)
+        models.storage.delete(self)
