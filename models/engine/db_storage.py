@@ -43,6 +43,7 @@ class DBStorage:
         for obj in class_list:
             for instance in self.__session.query(obj).all():
                 key = instance.__class__.__name__ + "." + instance.id
+                del instance.__dict__["_sa_instance_state"]
                 class_dict[key] = instance
 
         return class_dict
