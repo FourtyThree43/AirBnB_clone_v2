@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """This module defines a base class for all models in our hbnb clone"""
-# this is a comment
 import models
 from uuid import uuid4
 from datetime import datetime
@@ -8,24 +7,31 @@ import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime
 
-Base = declarative_base()
+if models.storage_type == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:
     """A base class for all hbnb models"""
+    if models.storage_type == "db":
+        Base = declarative_base()
+        id = Column(String(60), unique=True, nullable=False, primary_key=True,
+                    default=str(uuid4()))
+        created_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
 
-    id = Column(String(60), unique=True, nullable=False, primary_key=True,
-                default=str(uuid4()))
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    print(f"Storage type: {models.storage_type}")
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
-            pass
-            # self.id = id
-            # self.created_at = created_at
-            # self.updated_at = updated_at
+            if models.storage_type != "db":
+                self.id = str(uuid4())
+                self.created_at = self.updated_at = datetime.utcnow()
         else:
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
