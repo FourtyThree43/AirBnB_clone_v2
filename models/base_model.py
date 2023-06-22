@@ -54,7 +54,7 @@ class BaseModel:
         dictionary = {
             key: value
             for key, value in self.__dict__.items()
-            if key != '_sa_instance_state' or models.storage_type != "db"
+            if key != '_sa_instance_state'
         }
         dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
