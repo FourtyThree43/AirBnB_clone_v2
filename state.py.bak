@@ -9,7 +9,7 @@ if models.storage_type == "db":
 
 # import sqlalchemy
 # from models.city import City
-
+# comment
 
 class State(BaseModel, Base):
     """ State class """
