@@ -24,8 +24,6 @@ class BaseModel:
         updated_at = Column(DateTime, nullable=False,
                             default=datetime.utcnow())
 
-    # print(f"Storage type: {models.storage_type}")
-
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
@@ -53,12 +51,15 @@ class BaseModel:
 
     def to_dict(self):
         """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
+        dictionary = {
+            key: value
+            for key, value in self.__dict__.items()
+            if key != '_sa_instance_state' or models.storage_type != "db"
+        }
+        dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+
         return dictionary
 
     def delete(self):
