@@ -1,12 +1,23 @@
 #!/usr/bin/python3
+""" Place Module for HBNB project """
 import models
 from models.base_model import BaseModel, Base
 import sqlalchemy
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
-""" Place Module for HBNB project """
-from models.base_model import BaseModel
+
+if models.storage_type == 'db':
+    place_amenity = Table('place_amenity', Base.metadata,
+                          Column('place_id', String(60),
+                                 ForeignKey('places.id'),
+                                 primary_key=True,
+                                 nullable=False),
+                          Column('amenity_id', String(60),
+                                 ForeignKey('amenities.id'),
+                                 primary_key=True,
+                                 nullable=False)
+                          )
 
 
 class Place(BaseModel, Base):
@@ -24,6 +35,9 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
         reviews = relationship("Review", backref="place")
+        amenities = relationship("Amenity", secondary="place_amenity",
+                                 back_populates="place_amenities",
+                                 viewonly=False)
     else:
         city_id = ""
         user_id = ""
@@ -46,3 +60,23 @@ class Place(BaseModel, Base):
             return [value for key, value in models.storage.all().items()
                     if key.split(".")[0] == "Place"
                     and value.place_id == self.id]
+
+        @property
+        def amenities(self):
+            """
+            Returns the list of ``Amenity`` instances with ``amenity_ids``
+            that contains all ``Amenity.id`` linked to the ``Place``
+            """
+            return [value for key, value in models.storage.all().items()
+                    if key.split(".")[0] == "Place"
+                    and value.place_id == self.id]
+
+        @amenities.setter
+        def amenities(self, amenity):
+            """
+            Setter attribute handles append method for adding ``Amenity.id``
+            to ``amenity_ids``. Only accepts ``Amenity`` objects.
+            """
+            from models.amenity import Amenity
+            if isinstance(amenity, Amenity):
+                self.amenity_ids.append(amenity.id)
