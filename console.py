@@ -53,6 +53,9 @@ class HBNBCommand(cmd.Cmd):
             cls_name = arg[0]
             if cls_name not in self.__class_list:
                 print("** class doesn't exist **")
+            elif cls_name == "State" and (not arg[1:]
+                                          or "name=" not in "".join(arg[1:])):
+                return
             else:
                 try:
                     obj = eval(cls_name)()
