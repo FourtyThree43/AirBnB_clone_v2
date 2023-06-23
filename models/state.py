@@ -2,9 +2,7 @@
 """ State Module for HBNB project """
 
 import models
-from models.base_model import Base, BaseModel
-# from models.city import City
-# import sqlalchemy
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
