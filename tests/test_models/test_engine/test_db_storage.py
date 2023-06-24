@@ -86,3 +86,12 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+
+@unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") != "db", "No apply for db")
+class TestDataBase(unittest.TestCase):
+    """this will test the console"""
+
+    def test_db(self):
+        """ test database """
+        pass
