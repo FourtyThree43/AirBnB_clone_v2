@@ -29,7 +29,7 @@ class DBStorage:
                                       pool_pre_ping=True)
 
         if os.getenv("HBNB_MYSQL_USER") == "test":
-            Base.metadata.drop_all(self.__engine)
+            Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
         """Query objects on the current database session """
@@ -70,3 +70,9 @@ class DBStorage:
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def close(self):
+        """
+        Closes Session
+        """
+        self.__session.close()
