@@ -17,10 +17,6 @@ class State(BaseModel, Base):
     else:
         name = ""
 
-        def __init__(self, *args, **kwargs):
-            """Custom constructor for ``State`` object """
-            super().__init__(*args, **kwargs)
-
         @property
         def cities(self):
             """
