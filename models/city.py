@@ -20,4 +20,4 @@ class City(BaseModel, Base):
 
         def __init__(self, *args, **kwargs):
             """Custom constructor for ``City`` object """
-            super.__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
