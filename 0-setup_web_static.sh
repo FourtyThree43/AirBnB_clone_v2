@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Sets up your web servers for the deployment of web_static
 
 # Colors for formatting output
 red='\e[0;31m'
