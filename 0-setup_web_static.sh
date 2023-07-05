@@ -32,7 +32,7 @@ function create_directory() {
 # Function to create html file
 function create_html_file() {
     local file_path="/data/web_static/releases/test/index.html"
-    local content="<html><body><h1>This is a fake HTML file.</h1></body></html>"
+    local content="<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>"
     echo "$content" > "$file_path"
 }
 
