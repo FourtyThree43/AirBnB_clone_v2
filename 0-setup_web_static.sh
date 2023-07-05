@@ -84,7 +84,7 @@ function handle_error() {
     exit "$exit_code"
 }
 
-echo -e "${blue}Setting up your web server & doing some minor checks...${reset}\n"
+# echo -e "${blue}Setting up your web server & doing some minor checks...${reset}\n"
 
 # Install packages
 for package in "${packages[@]}"; do
@@ -106,7 +106,7 @@ if [ -L "$symbolic_link" ]; then
 fi
 ln -s "/data/web_static/releases/test/" "$symbolic_link"
 
-echo -e "\n${blue}Updating Nginx configuration.${reset}\n"
+# echo -e "\n${blue}Updating Nginx configuration.${reset}\n"
 
 # Update Nginx configuration
 update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
