@@ -30,6 +30,19 @@ function create_directory() {
     fi
 }
 
+# Create or recreate the symbolic link
+function recreate_symbolic_link () {
+    local directory="/data/web_static/releases/test/"
+    local symbolic_link="/data/web_static/current"
+
+    if [ -L "$symbolic_link" ]; then
+      echo -e "    ${green}symbolic link already exist -> ${brown}$symbolic_link : Removing...${reset}"
+      sudo rm "$symbolic_link"
+    fi
+    echo -e "    ${green}Creating new symbolic link -> ${brown}$symbolic_link${reset}"
+    sudo ln -s "$directory" "$symbolic_link"
+}
+
 # Function to create html file
 function create_html_file() {
     local file_path="/data/web_static/releases/test/index.html"
@@ -72,7 +85,7 @@ function update_nginx_config() {
     sudo sed -i '/server_name _;/a \
         location /hbnb_static {\
             alias /data/web_static/current/;\
-        }' "$config_file"
+        }\n' "$config_file"
 }
 
 # Function to restart nginx service.
@@ -118,11 +131,7 @@ done
 create_html_file || handle_error 1 "Failed to create HTML file"
 
 # Create or recreate the symbolic link
-symbolic_link="/data/web_static/current"
-if [ -L "$symbolic_link" ]; then
-    rm "$symbolic_link"
-fi
-ln -s "/data/web_static/releases/test/" "$symbolic_link"
+recreate_symbolic_link || handle_error 1 "Failed to create symbolic link"
 
 # Check and update ownership of /data/ to ``ubuntu``
 check_owner
