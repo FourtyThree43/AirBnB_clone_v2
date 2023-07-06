@@ -4,14 +4,15 @@
 # Colors for formatting output
 red='\e[0;31m'
 brown='\e[0;33m'
-green='\e[1;32m'
-blue='\e[1;34m'
+# green='\e[1;32m'
+# blue='\e[1;34m'
 reset='\033[0m'
 
 # Function to install packages
 function install() {
     if command -v "$1" &> /dev/null ; then
-        echo -e "    ${green}Package already installed: ${brown}${1}${reset}"
+        return
+        # echo -e "    ${green}Package already installed: ${brown}${1}${reset}"
     else
         echo -e "    Installing: ${brown}$1${reset}"
         sudo apt-get update -y -qq && sudo apt-get install -y "$1" -qq
@@ -26,7 +27,8 @@ function create_directory() {
     if [ ! -d "$directory" ]; then
         mkdir -p "$directory"
     else
-        echo -e "    ${green}Directory already exists: ${brown}$directory${reset}"
+        return
+        # echo -e "    ${green}Directory already exists: ${brown}$directory${reset}"
     fi
 }
 
@@ -44,7 +46,7 @@ function update_nginx_config() {
     # Backup the current configuration file if backup doesn't exist
     if [ ! -f "${config_file}.backup" ]; then
         sudo cp "$config_file" "${config_file}.backup"
-        echo -e "    Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
+        # echo -e "    Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
     fi
 
     # Remove any existing configuration for serving hbnb_static
@@ -85,7 +87,7 @@ directories=(
     "/data/web_static/releases/test/"
 )
 
-echo -e "${blue}Setting up your web server & doing some minor checks...${reset}"
+# echo -e "${blue}Setting up your web server & doing some minor checks...${reset}"
 
 # Install packages
 for package in "${packages[@]}"; do
@@ -107,7 +109,7 @@ if [ -L "$symbolic_link" ]; then
 fi
 ln -s "/data/web_static/releases/test/" "$symbolic_link"
 
-echo -e "${blue}Updating Nginx configuration.${reset}"
+# echo -e "${blue}Updating Nginx configuration.${reset}"
 
 # Update Nginx configuration
 update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
@@ -115,6 +117,6 @@ update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
 # Restart Nginx
 restart_nginx || handle_error 1 "Failed to restart Nginx"
 
-echo -e "${blue}Setting up Done!${reset}"
+# echo -e "${blue}Setting up Done!${reset}"
 # Successful exit
 exit 0
