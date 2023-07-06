@@ -39,10 +39,13 @@ function create_html_file() {
 
 # Function to Check/Update /data/ ownership.
 function check_owner() {
-    local owner=$(stat -c "%U" "/data/")
-    local group=$(stat -c "%G" "/data/")
+    local owner
+    local group
     local expected_owner="ubuntu"
     local expected_group="ubuntu"
+
+    owner=$(stat -c "%U" "/data/")
+    group=$(stat -c "%G" "/data/")
 
     if [ "$owner" != "$expected_owner" ] || [ "$group" != "$expected_group" ]; then
         echo -e "    ${brown}Changing ownership of /data/ to ubuntu:ubuntu...${reset}"
