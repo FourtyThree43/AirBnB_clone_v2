@@ -11,9 +11,9 @@ reset='\033[0m'
 # Function to install packages
 function install() {
     if command -v "$1" &> /dev/null ; then
-        echo -e "    ${green}${1} is already installed.${reset}\n"
+        echo -e "    ${green}Package already installed: ${brown}${1}${reset}"
     else
-        echo -e "    Installing: ${brown}$1${reset}\n"
+        echo -e "    Installing: ${brown}$1${reset}"
         sudo apt-get update -y -qq && sudo apt-get install -y "$1" -qq
         echo -e "\n"
     fi
@@ -26,7 +26,7 @@ function create_directory() {
     if [ ! -d "$directory" ]; then
         mkdir -p "$directory"
     else
-        echo -e "    Directory already exists: $directory"
+        echo -e "    ${green}Directory already exists: ${brown}$directory${reset}"
     fi
 }
 
@@ -44,14 +44,14 @@ function update_nginx_config() {
     # Backup the current configuration file if backup doesn't exist
     if [ ! -f "${config_file}.backup" ]; then
         sudo cp "$config_file" "${config_file}.backup"
-        echo -e "    Backed up the current configuration file to ${config_file}.backup"
+        echo -e "    Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
     fi
 
     # Remove any existing configuration for serving hbnb_static
     sudo sed -i '/location \/hbnb_static {/,/}/d' "$config_file"
 
     # Add new configuration for serving hbnb_static using alias
-    sudo sed -i '/server {/a \
+    sudo sed -i '/server_name _;/a \
         location /hbnb_static {\
             alias /data/web_static/current/;\
         }' "$config_file"
@@ -60,6 +60,15 @@ function update_nginx_config() {
 # Function to restart nginx service.
 function restart_nginx() {
     sudo service nginx restart
+}
+
+
+# Error handling function
+function handle_error() {
+    local exit_code="$1"
+    local error_message="$2"
+    echo -e "${red}Error: ${error_message}${reset}"
+    exit "$exit_code"
 }
 
 # Array of packages to install
@@ -76,15 +85,7 @@ directories=(
     "/data/web_static/releases/test/"
 )
 
-# Error handling function
-function handle_error() {
-    local exit_code="$1"
-    local error_message="$2"
-    echo -e "${red}Error: ${error_message}${reset}"
-    exit "$exit_code"
-}
-
-# echo -e "${blue}Setting up your web server & doing some minor checks...${reset}\n"
+echo -e "${blue}Setting up your web server & doing some minor checks...${reset}"
 
 # Install packages
 for package in "${packages[@]}"; do
@@ -106,7 +107,7 @@ if [ -L "$symbolic_link" ]; then
 fi
 ln -s "/data/web_static/releases/test/" "$symbolic_link"
 
-# echo -e "\n${blue}Updating Nginx configuration.${reset}\n"
+echo -e "${blue}Updating Nginx configuration.${reset}"
 
 # Update Nginx configuration
 update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
@@ -114,5 +115,6 @@ update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
 # Restart Nginx
 restart_nginx || handle_error 1 "Failed to restart Nginx"
 
+echo -e "${blue}Setting up Done!${reset}"
 # Successful exit
 exit 0
