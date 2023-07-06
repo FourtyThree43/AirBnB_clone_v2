@@ -48,10 +48,10 @@ function check_owner() {
     group=$(stat -c "%G" "/data/")
 
     if [ "$owner" != "$expected_owner" ] || [ "$group" != "$expected_group" ]; then
-        echo -e "    ${brown}Changing ownership of /data/ to ubuntu:ubuntu...${reset}"
+        echo -e "    ${blue}Changing ownership of ${brown}/data/ to ubuntu:ubuntu...${reset}"
         sudo chown -R ubuntu:ubuntu /data/ || handle_error 1 "Failed to change ownership of /data/"
     else
-        echo -e "    ${green}Ownership of /data/ is already set: ${brown}ubuntu:ubuntu.${reset}"
+        echo -e "    ${green}Ownership of ${brown}/data/ ${green}is already set: ${brown}ubuntu:ubuntu.${reset}"
     fi
 }
 
@@ -62,7 +62,7 @@ function update_nginx_config() {
     # Backup the current configuration file if backup doesn't exist
     if [ ! -f "${config_file}.backup" ]; then
         sudo cp "$config_file" "${config_file}.backup"
-        echo -e "    Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
+        echo -e "    ${green}Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
     fi
 
     # Remove any existing configuration for serving hbnb_static
@@ -79,7 +79,6 @@ function update_nginx_config() {
 function restart_nginx() {
     sudo service nginx restart
 }
-
 
 # Error handling function
 function handle_error() {
@@ -136,6 +135,6 @@ update_nginx_config || handle_error 1 "Failed to update Nginx configuration"
 # Restart Nginx
 restart_nginx || handle_error 1 "Failed to restart Nginx"
 
-echo -e "${blue}Setting up Done!${reset}"
+echo -e "${blue}[✔] D O N E${reset}"
 # Successful exit
 exit 0
