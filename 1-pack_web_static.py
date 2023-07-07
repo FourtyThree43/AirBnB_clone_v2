@@ -14,9 +14,11 @@ def do_pack():
     archive_name = "web_static_{}.tgz".format(now)
     archive_path = "versions/{}".format(archive_name)
 
-    archive_command = local("tar -czvf {} web_static".format(archive_path))
-
-    if archive_command.succeeded:
-        return archive_path
-    else:
-        return None
+    try:
+        print("Packing web_static to {}".format(archive_path))
+        local("tar -cvzf {} web_static".format(archive_path))
+        size = os.stat(archive_path).st_size
+        print("web_static packed: {} -> {} Bytes".format(archive_path, size))
+    except Exception:
+        archive_path = None
+    return archive_path
