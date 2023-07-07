@@ -2,7 +2,7 @@
 """Module to Compress files"""
 import os
 from datetime import datetime
-from fabric.api import local, runs_once
+from fabric.api import local
 
 
 def do_pack():
