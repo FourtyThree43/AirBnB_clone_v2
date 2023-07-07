@@ -61,10 +61,10 @@ function check_owner() {
     group=$(stat -c "%G" "/data/")
 
     if [ "$owner" != "$expected_owner" ] || [ "$group" != "$expected_group" ]; then
-        echo -e "    ${blue}Changing ownership of ${brown}/data/ to ubuntu:ubuntu...${reset}"
+        echo -e "    ${blue}Changing ownership of ${brown}/data/ to $owner:$group...${reset}"
         sudo chown -R ubuntu:ubuntu /data/ || handle_error 1 "Failed to change ownership of /data/"
     else
-        echo -e "    ${green}Ownership of ${brown}/data/ ${green}is already set: ${brown}ubuntu:ubuntu.${reset}"
+        echo -e "    ${green}Ownership of ${brown}/data/ ${green}is already set: ${brown}$owner:$group.${reset}"
     fi
 }
 
@@ -73,19 +73,18 @@ function update_nginx_config() {
     local config_file="/etc/nginx/sites-available/default"
 
     # Backup the current configuration file if backup doesn't exist
-    if [ ! -f "${config_file}.backup" ]; then
-        sudo cp "$config_file" "${config_file}.backup"
-        echo -e "    ${green}Backed up the current configuration file to ${brown}${config_file}.backup${reset}"
+    if [ ! -f "${config_file}_$(date +%Y%m%d%H%M%S).backup" ]; then
+        sudo cp "$config_file" "${config_file}_$(date +%Y%m%d%H%M%S).backup"
+        echo -e "    ${green}Backed up the current configuration file to ${brown}${config_file}_$(date +%Y%m%d%H%M%S).backup${reset}"
     fi
 
     # Remove any existing configuration for serving hbnb_static
     sudo sed -i '/location \/hbnb_static {/,/}/d' "$config_file"
 
+    local config="location /hbnb_static {\n\talias /data/web_static/current/;}"
+
     # Add new configuration for serving hbnb_static using alias
-    sudo sed -i '/server_name _;/a \
-        location /hbnb_static {\
-            alias /data/web_static/current/;\
-        }\n' "$config_file"
+    sudo sed -i "/server_name _;/a\\$config" "$config_file"
 }
 
 # Function to restart nginx service.
