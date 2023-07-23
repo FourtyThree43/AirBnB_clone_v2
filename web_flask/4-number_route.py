@@ -42,7 +42,7 @@ def python_is_cool(text):
     return "Python " + escape(text).replace("_", " ")
 
 
-@app.route("number/<int:n>")
+@app.route("/number/<int:n>")
 def number(n):
     """
     Returns:
