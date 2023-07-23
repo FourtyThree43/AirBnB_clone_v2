@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
-from _typeshed import Self
 import json
 
 
@@ -65,4 +64,3 @@ class FileStorage:
     def close(self):
         """Calls reload() method for deserializing the JSON file to objects"""
         self.reload()
-
